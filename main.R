@@ -3,7 +3,14 @@ library(dplyr)
 
 getwd()
 
-eng <- read.csv("energy.csv", header = TRUE, sep = ",", dec = ".")
+concat <- function(...) {
+    paste(..., sep="")
+}
+
+cpu <- "i78700"
+path <- concat("data/" , cpu ,"/")
+
+eng <- read.csv(concat(path,"energy.csv"), header = TRUE, sep = ",", dec = ".")
 eng
 
 # Assign Type group
@@ -17,14 +24,14 @@ eng$type[eng$language %in% virt ] <- "Virtualized"
 eng$type[eng$language %in% interp ] <- "Interpreted"
 
 summary(eng)
-View(eng)
 eng
 min(eng$energy)
 
 # Boxplot specific task
-eng2 <- filter(eng, eng$task == "n-body")
+eng2 <- filter(eng, eng$task == "fannkuch-redux")
 eng2
-ggplot(eng2, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
+spec_task <- ggplot(eng2, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
+ggsave(file=concat(path, "task_avg.svg"), plot=spec_task)
 
 # Boxplot specific language type
 eng4 <- filter(eng, eng$type == "Virtualized")
@@ -37,13 +44,16 @@ eng3
 ggplot(eng3, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
 
 # Boxplot energy on task
-ggplot(eng, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
+eng_on_task <- ggplot(eng, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
+ggsave(file=concat(path, "energy_on_task.svg"), plot= eng_on_task)
 
 # Boxplot energy on language
-ggplot(eng, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
+eng_on_lang <- ggplot(eng, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
+ggsave(file=concat(path, "energ_on_language.svg"), plot=eng_on_lang)
 
 # Boxplot energy on language type
-ggplot(eng, aes(y=energy, x=type)) + geom_boxplot() +theme_bw()
+eng_on_cat <- ggplot(eng, aes(y=energy, x=type)) + geom_boxplot() +theme_bw()
+ggsave(file=concat(path, "energy_on_language_category.svg"), plot=eng_on_cat)
 
 # Normalized AVG list by language
 lang_avg <- aggregate(x=eng$energy, by= list(eng$language), FUN = mean)

@@ -1,0 +1,21 @@
+Intel i7 8700
+1           C   1.000000
+2        Rust   1.130393
+3        Java   1.206392
+4        Lisp   1.586039
+5      Pascal   1.626832
+6      CSharp   1.694165
+7          Go   1.979353
+8      FSharp   2.195471
+9     Fortran   2.738225
+10 JavaScript   4.166337
+11     Racket   4.677926
+12 TypeScript   8.128601
+13     Erlang  12.829212
+14        PHP  19.536105
+15        Lua  44.496391
+16     Python  47.471779
+17       Perl  48.312902
+18      JRuby 116.403169
+
+
