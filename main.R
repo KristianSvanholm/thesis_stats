@@ -14,8 +14,8 @@ eng <- read.csv(concat(path,"energy.csv"), header = TRUE, sep = ",", dec = ".")
 eng
 
 # Assign Type group
-comp = c("C", "Go", "Rust","Fortran", "Pascal")
-virt = c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Lisp", "Racket")
+comp = c("C", "Go", "Rust","Fortran", "Pascal", "Lisp")
+virt = c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Racket")
 interp = c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
 
 eng$type <- "not covered"
