@@ -7,7 +7,7 @@ concat <- function(...) {
     paste(..., sep="")
 }
 
-chiplist <- c("i78700", "epyc")
+chiplist <- c("i78700", "epyc", "m2pro")
 
 # Assign Type group
 comp = c("C", "Go", "Rust","Fortran", "Pascal", "Lisp")
