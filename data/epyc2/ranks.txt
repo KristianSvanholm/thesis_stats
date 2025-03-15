@@ -1,0 +1,18 @@
+AMD epyc 7713 #2
+1        Rust   1.000000
+2           C   1.215206
+3        Java   1.994308
+4      CSharp   3.071553
+5      FSharp   3.466818
+6        Lisp   3.708038
+7          Go   5.112721
+8     Fortran   5.873262
+9      Racket   8.103282
+10 JavaScript   8.308939
+11     Erlang  21.057629
+12 TypeScript  21.115994
+13        PHP  21.703696
+14     Python  56.398676
+15      JRuby  69.348386
+16       Perl  78.096835
+17        Lua  88.499625

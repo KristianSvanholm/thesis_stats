@@ -1,4 +1,4 @@
-AMD Epyc 7713
+AMD Epyc 7713 #1
 1        Rust   1.000000
 2           C   1.261502
 3        Java   2.171162
