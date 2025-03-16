@@ -1,0 +1,18 @@
+Intel n150
+1           C   1.000000
+2        Rust   1.094043
+3        Java   1.100656
+4      CSharp   1.540798
+5        Lisp   1.558922
+6          Go   1.763088
+7      FSharp   1.949462
+8     Fortran   3.341568
+9  JavaScript   4.016527
+10     Racket   4.338291
+11 TypeScript   8.573604
+12     Erlang  11.249795
+13        PHP  16.084342
+14     Python  38.288376
+15       Perl  40.136465
+16        Lua  50.371409
+17      JRuby  74.861374
