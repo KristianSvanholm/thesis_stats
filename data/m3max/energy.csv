@@ -803,7 +803,7 @@ Lua,binary-trees,70461,1721627649.766
 Lua,binary-trees,70583,1717280099.377
 Lua,binary-trees,70023,1711339893.698
 Lua,fannkuch-redux,397471,8598261222.137
-Lua,fannkuch-redux,-86003653,8645639844.53
+Lua,fannkuch-redux,386891,9149337770.458
 Lua,fannkuch-redux,397335,8589628395.33
 Lua,fannkuch-redux,396504,8613988367.769
 Lua,fannkuch-redux,390944,8924872468.631
@@ -1291,7 +1291,7 @@ Rust,spectral-norm,51,10055000.0
 Rust,spectral-norm,53,10027000.0
 Rust,spectral-norm,51,10012000.0
 Rust,spectral-norm,54,10190000.0
-Rust,spectral-norm,291,9970704.341
+Rust,spectral-norm,51,9892151.198
 Rust,spectral-norm,52,10155000.0
 Rust,spectral-norm,52,10152000.0
 Rust,spectral-norm,52,10117000.0
