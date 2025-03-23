@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 fn main() {
 
-    let chips = ["i78700", "n150", "epyc1", "epyc2", "m1pro", "m2pro", "m3max"];
+    let chips = ["i78700", "n150", "epyc1", "epyc2", "m1max", "m2pro", "m3max"];
 
     let mut collect = HashMap::new();
     for chip in chips {
