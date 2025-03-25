@@ -19,48 +19,41 @@ for (chip in chiplist) {
     path <- concat("data/" , chip ,"/")
 
     eng <- read.csv(concat(path,"energy.csv"), header = TRUE, sep = ",", dec = ".")
-    eng
 
-    eng$type <- "not covered"
-    eng$type[eng$language %in% comp ] <- "Compiled"
-    eng$type[eng$language %in% virt ] <- "Virtualized"
-    eng$type[eng$language %in% interp ] <- "Interpreted"
+    min <- aggregate(x=eng$energy, by= list(eng$language, eng$task), FUN = min)
+    names(min) = c("language", "task", "energy")
 
-    summary(eng)
-    eng
-    min(eng$energy)
+    min$type <- "not covered"
+    min$type[min$language %in% comp ] <- "Compiled"
+    min$type[min$language %in% virt ] <- "Virtualized"
+    min$type[min$language %in% interp ] <- "Interpreted"
 
     # Boxplot specific task
-    eng2 <- filter(eng, eng$task == "fannkuch-redux")
-    eng2
+    eng2 <- filter(min, min$task == "fannkuch-redux")
     spec_task <- ggplot(eng2, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
-    ggsave(file=concat(path, "task_avg.svg"), plot=spec_task)
+    #ggsave(file=concat(path, "task_avg.svg"), plot=spec_task)
 
     # Boxplot specific language type
-    eng4 <- filter(eng, eng$type == "Virtualized")
-    eng4
+    eng4 <- filter(min, min$type == "Virtualized")
     ggplot(eng4, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
 
     # Boxplot specific language
-    eng3 <- filter(eng, eng$language == "CSharp")
-    eng3
+    eng3 <- filter(min, min$language == "CSharp")
     ggplot(eng3, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
 
     # Boxplot energy on task
-    eng_on_task <- ggplot(eng, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
-    ggsave(file=concat(path, "energy_on_task.svg"), plot= eng_on_task)
+    eng_on_task <- ggplot(min, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
+    #ggsave(file=concat(path, "energy_on_task.svg"), plot= eng_on_task)
 
     # Boxplot energy on language
-    eng_on_lang <- ggplot(eng, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
-    ggsave(file=concat(path, "energ_on_language.svg"), plot=eng_on_lang)
+    eng_on_lang <- ggplot(min, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
+    #ggsave(file=concat(path, "energy_on_language.svg"), plot=eng_on_lang)
 
     # Boxplot energy on language type
-    eng_on_cat <- ggplot(eng, aes(y=energy, x=type)) + geom_boxplot() +theme_bw()
+    eng_on_cat <- ggplot(min, aes(y=energy, x=type)) + geom_boxplot() +theme_bw()
     ggsave(file=concat(path, "energy_on_language_category.svg"), plot=eng_on_cat)
 
     # Normalized minimums AVG list by language
-    min <- aggregate(x=eng$energy, by= list(eng$language, eng$task), FUN = min)
-    names(min) = c("language", "task", "energy")
     lang_min_avg <- aggregate(x=min$energy, by=list(min$language), mean)
 
     m <- min(lang_min_avg$x)
@@ -84,6 +77,6 @@ for (chip in chiplist) {
       group_by(language) %>%
       summarise(correlation = cor(duration, energy,use = "everything", method ="kendall"))
 
-    print(correlation)
+    #print(correlation)
 
 }
