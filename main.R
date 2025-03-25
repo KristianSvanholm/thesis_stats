@@ -7,12 +7,12 @@ concat <- function(...) {
     paste(..., sep="")
 }
 
-chiplist <- c("i78700", "n150", "epyc1", "epyc2", "m1max", "m2pro", "m3max", "m1max_low", "m3max_low")
+chiplist <- c("i78700", "n150", "epyc1", "epyc2", "m1max", "m1max_low", "m2pro", "m3max", "m3max_low")
 
 # Assign Type group
-comp = c("C", "Go", "Rust","Fortran", "Pascal", "Lisp")
-virt = c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Racket")
-interp = c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
+comp <- c("C", "Go", "Rust","Fortran", "Pascal", "Lisp")
+virt <- c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Racket") 
+interp <- c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
 
 for (chip in chiplist) {
 
@@ -20,11 +20,6 @@ for (chip in chiplist) {
 
     eng <- read.csv(concat(path,"energy.csv"), header = TRUE, sep = ",", dec = ".")
     eng
-
-    # Assign Type group
-    comp = c("C", "Go", "Rust","Fortran", "Pascal")
-    virt = c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Lisp", "Racket")
-    interp = c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
 
     eng$type <- "not covered"
     eng$type[eng$language %in% comp ] <- "Compiled"
@@ -63,23 +58,18 @@ for (chip in chiplist) {
     eng_on_cat <- ggplot(eng, aes(y=energy, x=type)) + geom_boxplot() +theme_bw()
     ggsave(file=concat(path, "energy_on_language_category.svg"), plot=eng_on_cat)
 
-    # Normalized AVG list by language
-    lang_avg <- aggregate(x=eng$energy, by= list(eng$language), FUN = mean)
-    m <- min(lang_avg$x)
+    # Normalized minimums AVG list by language
+    min <- aggregate(x=eng$energy, by= list(eng$language, eng$task), FUN = min)
+    names(min) = c("language", "task", "energy")
+    lang_min_avg <- aggregate(x=min$energy, by=list(min$language), mean)
 
-    norm <- lang_avg$x / m
-    print(norm)
-    new <- data.frame(language=lang_avg$Group.1, energy_avg=norm)
-    print(new[order(new$energy_avg),])
+    m <- min(lang_min_avg$x)
 
-    # Normalized AVG list by task // Kinda irrelevant i think.
-    task_avg <- aggregate(x=eng$energy, by= list(eng$task), FUN = mean)
-    m <- min(task_avg$x)
-
-    norm <- task_avg$x / m
-    print(norm)
-    new <- data.frame(language=task_avg$Group.1, energy_avg=norm)
-    print(new[order(new$energy_avg),])
+    norm <- lang_min_avg$x / m
+    new <- data.frame(language=lang_min_avg$Group.1, energy_avg=norm)
+    sorted_lang <- new[order(new$energy_avg),]
+    rownames(sorted_lang) <- NULL
+    write.csv(sorted_lang, file=concat(path, "ranks.csv"))
 
     # Correlations between duration and energy
     cor(eng$duration, eng$energy, use = "everything", method ="spearman")

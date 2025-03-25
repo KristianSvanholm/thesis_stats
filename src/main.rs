@@ -8,14 +8,13 @@ fn main() {
 
     let mut collect = HashMap::new();
     for chip in chips {
-        let ranks: Vec<String> = fs::read_to_string(format!("data/{}/ranks.txt",chip))
+        let ranks: Vec<String> = fs::read_to_string(format!("data/{}/ranks.csv",chip))
             .expect("Should be able to read this file")
             .split("\n")
             .skip(1) // Skip title
             .filter(|p| !p.is_empty())
             .map(|entry| 
-                entry.split(" ")
-                    .filter(|p| !p.is_empty())
+                entry.split(",")
                     .collect::<Vec<_>>()[1]
                     .to_string()
             )
@@ -31,7 +30,7 @@ fn main() {
             let a = keys[n];
             let b = keys[m];
             let tau = kendall(collect[a].clone(), collect[b].clone());
-            println!("{:7} - {:7} | Tau: {:.3}", a,b,tau);
+            println!("{:9} - {:9} | Tau: {:.3}", a,b,tau);
         }
     }
 
@@ -59,8 +58,6 @@ fn kendall<T: PartialEq>(a: Vec<T>, b: Vec<T> ) -> f32 {
 
         }
     }
-
-    //println!("{} - {}", con, dis);
 
     let n = ix.len() as f32;
     (con-dis) / ((n*(n-1.0))/2.0)
