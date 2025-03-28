@@ -76,18 +76,18 @@ for (chip in chiplist) {
     write.csv(sorted_lang, file=concat(path, "ranks.csv"))
 
     # Correlations between duration and energy
-    cor(eng$duration, eng$energy, use = "everything", method ="spearman")
-    cor(eng$duration, eng$energy, use = "everything", method ="kendall")
-    cor(eng$duration, eng$energy, use = "everything", method ="pearson")
+    cor(min$duration, min$energy, use = "everything", method ="spearman")
+    cor(min$duration, min$energy, use = "everything", method ="kendall")
+    cor(min$duration, min$energy, use = "everything", method ="pearson")
 
     # P test
-    cor.test(eng$duration, eng$energy)
+    cor.test(min$duration, min$energy)
 
     # Energy & Duration correlate to language ( Very different results with different methods )
-    correlation <- eng %>%
+    correlation <- min %>%
       group_by(language) %>%
-      summarise(correlation = cor(duration, energy,use = "everything", method ="kendall"))
+      summarise(correlation = cor(duration, energy, use = "everything", method ="kendall"))
 
-    #print(correlation)
+    write.csv(correlation, file=concat(path, "energy_time_cor.csv"))
 
 }
