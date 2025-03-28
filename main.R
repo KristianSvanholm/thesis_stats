@@ -9,7 +9,7 @@ concat <- function(...) {
 
 chiplist <- c("i78700", "n150", "epyc1", "epyc2", "m1max", "m1max_low", "m2pro", "m3max", "m3max_low")
 
-# Assign Type group
+# Type group
 comp <- c("C", "Go", "Rust","Fortran", "Pascal", "Lisp")
 virt <- c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Racket") 
 interp <- c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
@@ -20,13 +20,24 @@ for (chip in chiplist) {
 
     eng <- read.csv(concat(path,"energy.csv"), header = TRUE, sep = ",", dec = ".")
 
-    min <- aggregate(x=eng$energy, by= list(eng$language, eng$task), FUN = min)
-    names(min) = c("language", "task", "energy")
+    # Aggregate minimum for both energy and duration individually
+    min <- aggregate(list(eng$energy,eng$duration), by= list(eng$language, eng$task), FUN = min)
+    names(min) = c("language", "task", "energy", "duration")
 
+    # Assign type groups   
     min$type <- "not covered"
     min$type[min$language %in% comp ] <- "Compiled"
     min$type[min$language %in% virt ] <- "Virtualized"
     min$type[min$language %in% interp ] <- "Interpreted"
+
+    # scatter points
+    scatter <- ggplot(min, aes(y=energy, x=duration, color=type)) + geom_point()
+    ggsave(file=concat(path, "scatter.svg"), plot=scatter)
+
+    #data <- min %>% select(-type, -language, -task) %>% scale()
+    #cls <- kmeans(data, centers = 10, iter.max = 100, nstart = 100)
+    #clust <- ggplot(data, aes(x=energy, y = duration, color= as.factor(cls$cluster), fill =as.factor(cls$cluster))) + geom_point() + stat_ellipse(type="t", geom = "polygon", alpha = 0.4)
+    #ggsave(file=concat(path, "cluster.svg"), plot=clust)
 
     # Boxplot specific task
     eng2 <- filter(min, min$task == "fannkuch-redux")
