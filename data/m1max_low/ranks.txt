@@ -1,0 +1,18 @@
+Apple m1 Max low energy
+1           C   1.000000
+2        Java   1.060106
+3        Rust   1.145472
+4      CSharp   1.571427
+5      FSharp   1.827043
+6        Lisp   1.859015
+7          Go   1.906261
+8     Fortran   2.691593
+9      Racket   2.763678
+10 JavaScript   3.173341
+11 TypeScript   5.264712
+12      JRuby  11.191957
+13     Erlang  16.352163
+14        PHP  22.409905
+15        Lua  30.052794
+16     Python  33.743618
+17       Perl  44.202863
