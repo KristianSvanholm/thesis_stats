@@ -7,12 +7,14 @@ concat <- function(...) {
     paste(..., sep="")
 }
 
-chiplist <- c("i78700", "n150", "epyc1", "epyc2", "m1max", "m1max_low", "m2pro", "m3max", "m3max_low")
+chiplist <- c("i78700", "n150", "epyc1", "epyc2", "m1max", "m2pro", "m3max")
 
 # Type group
 comp <- c("C", "Go", "Rust","Fortran", "Pascal", "Lisp")
 virt <- c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Racket") 
 interp <- c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
+
+collector <- frame()
 
 for (chip in chiplist) {
 
@@ -56,22 +58,26 @@ for (chip in chiplist) {
     eng_on_task <- ggplot(min, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
     #ggsave(file=concat(path, "energy_on_task.svg"), plot= eng_on_task)
 
-    # Boxplot energy on language
-    eng_on_lang <- ggplot(min, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
-    #ggsave(file=concat(path, "energy_on_language.svg"), plot=eng_on_lang)
-
     # Boxplot energy on language type
     eng_on_cat <- ggplot(min, aes(y=energy, x=type)) + geom_boxplot() +theme_bw()
     ggsave(file=concat(path, "energy_on_language_category.svg"), plot=eng_on_cat)
 
     # Normalized minimums AVG list by language
     lang_min_avg <- aggregate(x=min$energy, by=list(min$language), mean)
+    names(lang_min_avg) = c("language", "energy")
 
-    m <- min(lang_min_avg$x)
 
-    norm <- lang_min_avg$x / m
-    new <- data.frame(language=lang_min_avg$Group.1, energy_avg=norm)
-    sorted_lang <- new[order(new$energy_avg),]
+
+    m <- min(lang_min_avg$energy)
+    
+    norm <- lang_min_avg
+    norm$energy <- lang_min_avg$energy / m
+
+    norm_collect <- norm
+    norm_collect["cpu"] <- chip
+    collector <- rbind(collector, norm_collect)
+
+    sorted_lang <- norm[order(norm$energy),]
     rownames(sorted_lang) <- NULL
     write.csv(sorted_lang, file=concat(path, "ranks.csv"))
 
@@ -91,3 +97,12 @@ for (chip in chiplist) {
     write.csv(correlation, file=concat(path, "energy_time_cor.csv"))
 
 }
+
+print(collector)
+
+group_ordered <- with(collector, reorder(language, energy, median))
+# Boxplot energy on language
+eng_on_lang <- ggplot(collector, aes(y=energy, x=group_ordered)) + geom_boxplot() +theme_bw() + scale_x_discrete(guide = guide_axis(angle = 45)) 
+ggsave(file="energy_on_language.svg", plot=eng_on_lang)
+
+
