@@ -34,7 +34,7 @@ for (chip in chiplist) {
 
     # scatter points
     scatter <- ggplot(min, aes(y=energy, x=duration, color=type)) + geom_point()
-    ggsave(file=concat(path, "scatter.svg"), plot=scatter)
+    #ggsave(file=concat(path, "scatter.svg"), plot=scatter)
 
     #data <- min %>% select(-type, -language, -task) %>% scale()
     #cls <- kmeans(data, centers = 10, iter.max = 100, nstart = 100)
@@ -98,9 +98,8 @@ for (chip in chiplist) {
 
 }
 
-print(collector)
-
 group_ordered <- with(collector, reorder(language, energy, median))
+
 # Boxplot energy on language
 eng_on_lang <- ggplot(collector, aes(y=energy, x=group_ordered)) + geom_boxplot() +theme_bw() + scale_x_discrete(guide = guide_axis(angle = 45)) 
 ggsave(file="energy_on_language.svg", plot=eng_on_lang)
