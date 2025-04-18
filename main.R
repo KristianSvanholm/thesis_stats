@@ -20,11 +20,13 @@ for (chip in chiplist) {
 
     path <- concat("data/" , chip ,"/")
 
-    eng <- read.csv(concat(path,"energy.csv"), header = TRUE, sep = ",", dec = ".")
+    energy <- read.csv(concat(path,"energy.csv"), header = TRUE, sep = ",", dec = ".")
 
-    # Aggregate minimum for both energy and duration individually
-    min <- aggregate(list(eng$energy,eng$duration), by= list(eng$language, eng$task), FUN = min)
-    names(min) = c("language", "task", "energy", "duration")
+    # minimum for energy for each lang and task
+    min <- energy %>%
+        group_by(language, task) %>%
+        slice_min(energy, n=3, with_ties=FALSE) %>%
+        as.data.frame()
 
     # Assign type groups   
     min$type <- "not covered"
@@ -33,7 +35,7 @@ for (chip in chiplist) {
     min$type[min$language %in% interp ] <- "Interpreted"
 
     # scatter points
-    scatter <- ggplot(min, aes(y=energy, x=duration, color=type)) + geom_point()
+    #scatter <- ggplot(min, aes(y=energy, x=duration, color=type)) + geom_point()
     #ggsave(file=concat(path, "scatter.svg"), plot=scatter)
 
     #data <- min %>% select(-type, -language, -task) %>% scale()
@@ -65,8 +67,6 @@ for (chip in chiplist) {
     # Normalized minimums AVG list by language
     lang_min_avg <- aggregate(x=min$energy, by=list(min$language), mean)
     names(lang_min_avg) = c("language", "energy")
-
-
 
     m <- min(lang_min_avg$energy)
     
