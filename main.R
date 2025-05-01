@@ -1,5 +1,6 @@
 library(ggplot2)
 library(dplyr)
+library(forcats)
 
 getwd()
 
@@ -97,6 +98,41 @@ for (chip in chiplist) {
     write.csv(correlation, file=concat(path, "energy_time_cor.csv"))
 
 }
+
+collector <- collector %>% mutate(cpu = fct_inorder(cpu)) %>% as.data.frame()
+
+variance <- ggplot(collector, aes(y=energy, x=cpu, group=language, color=language)) +
+    geom_line() + geom_point() + 
+    geom_text(data=subset(collector, energy > 5 & cpu=="i78700" & language!="Python"),
+            aes(y=energy,x = cpu,label=language),
+            vjust=-0.5) +
+    geom_text(data=subset(collector, cpu=="n150" & language=="Python"),
+            aes(y=energy,x = cpu,label=language),
+            vjust=+1.25) +
+    theme_bw() +
+    theme(legend.position = "none")
+ggsave(file="variance.svg", plot=variance)
+
+data_ranked <- collector %>%
+    group_by(cpu) %>%
+    mutate(rank = rank(energy, ties.method = 'min')) %>%
+    as.data.frame()
+
+rank_diffs <- ggplot(data_ranked, aes(y=rank, x=cpu, group=language, color=language)) +
+    geom_line(linewidth = 1, alpha = 0.7) + 
+    geom_point(size = 3) +
+    scale_y_reverse(breaks = 1:max(data_ranked$energy)) +
+    geom_text(data=subset(data_ranked, cpu=="i78700"),
+            aes(y=rank,x = cpu,label=language),
+            vjust=-1) +
+    labs(
+        x = "CPU",
+        y = "Rank (Lower is better)",
+    ) +
+    theme_bw() + 
+    theme(legend.position= "none")
+
+ggsave(file="rank_diffs.svg", plot=rank_diffs)
 
 group_ordered <- with(collector, reorder(language, energy, median))
 
