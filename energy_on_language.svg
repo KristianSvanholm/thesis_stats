@@ -171,7 +171,6 @@
 <text transform='translate(433.78,451.84) rotate(-45)' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='24.67px' lengthAdjust='spacingAndGlyphs'>JRuby</text>
 <text transform='translate(460.43,451.84) rotate(-45)' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='15.72px' lengthAdjust='spacingAndGlyphs'>Lua</text>
 <text transform='translate(487.07,451.84) rotate(-45)' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='16.47px' lengthAdjust='spacingAndGlyphs'>Perl</text>
-<text x='269.38' y='496.23' text-anchor='middle' style='font-size: 11.00px; font-family: "Liberation Sans";' textLength='80.29px' lengthAdjust='spacingAndGlyphs'>group_ordered</text>
-<text transform='translate(13.50,223.92) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Liberation Sans";' textLength='38.33px' lengthAdjust='spacingAndGlyphs'>energy</text>
+<text transform='translate(13.50,223.92) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Liberation Sans";' textLength='111.72px' lengthAdjust='spacingAndGlyphs'>Energy (normalized)</text>
 </g>
 </svg>

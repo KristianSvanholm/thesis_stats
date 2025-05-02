@@ -276,7 +276,6 @@
 <text x='331.01' y='483.64' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='33.33px' lengthAdjust='spacingAndGlyphs'>m1max</text>
 <text x='395.44' y='483.64' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='28.56px' lengthAdjust='spacingAndGlyphs'>m2pro</text>
 <text x='459.86' y='483.64' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='33.33px' lengthAdjust='spacingAndGlyphs'>m3max</text>
-<text x='266.59' y='496.23' text-anchor='middle' style='font-size: 11.00px; font-family: "Liberation Sans";' textLength='22.36px' lengthAdjust='spacingAndGlyphs'>CPU</text>
 <text transform='translate(13.50,238.89) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Liberation Sans";' textLength='121.98px' lengthAdjust='spacingAndGlyphs'>Rank (Lower is better)</text>
 </g>
 </svg>
