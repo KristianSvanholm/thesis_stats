@@ -110,6 +110,10 @@ variance <- ggplot(collector, aes(y=energy, x=cpu, group=language, color=languag
             aes(y=energy,x = cpu,label=language),
             vjust=+1.25) +
     theme_bw() +
+    labs(
+        x = "",
+        y = "Energy (normalized)",
+    ) +
     theme(legend.position = "none")
 ggsave(file="variance.svg", plot=variance)
 
@@ -126,7 +130,7 @@ rank_diffs <- ggplot(data_ranked, aes(y=rank, x=cpu, group=language, color=langu
             aes(y=rank,x = cpu,label=language),
             vjust=-1) +
     labs(
-        x = "CPU",
+        x = "",
         y = "Rank (Lower is better)",
     ) +
     theme_bw() + 
@@ -137,7 +141,12 @@ ggsave(file="rank_diffs.svg", plot=rank_diffs)
 group_ordered <- with(collector, reorder(language, energy, median))
 
 # Boxplot energy on language
-eng_on_lang <- ggplot(collector, aes(y=energy, x=group_ordered)) + geom_boxplot() +theme_bw() + scale_x_discrete(guide = guide_axis(angle = 45)) 
+eng_on_lang <- ggplot(collector, aes(y=energy, x=group_ordered)) + geom_boxplot() +theme_bw() +
+        labs(
+            x = "",
+            y = "Energy (normalized)",
+        ) +
+        scale_x_discrete(guide = guide_axis(angle = 45)) 
 ggsave(file="energy_on_language.svg", plot=eng_on_lang)
 
 

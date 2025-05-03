@@ -216,7 +216,6 @@
 <text x='333.03' y='483.64' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='33.33px' lengthAdjust='spacingAndGlyphs'>m1max</text>
 <text x='396.68' y='483.64' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='28.56px' lengthAdjust='spacingAndGlyphs'>m2pro</text>
 <text x='460.33' y='483.64' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Liberation Sans";' textLength='33.33px' lengthAdjust='spacingAndGlyphs'>m3max</text>
-<text x='269.38' y='496.23' text-anchor='middle' style='font-size: 11.00px; font-family: "Liberation Sans";' textLength='20.00px' lengthAdjust='spacingAndGlyphs'>cpu</text>
-<text transform='translate(13.50,238.89) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Liberation Sans";' textLength='38.33px' lengthAdjust='spacingAndGlyphs'>energy</text>
+<text transform='translate(13.50,238.89) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Liberation Sans";' textLength='111.72px' lengthAdjust='spacingAndGlyphs'>Energy (normalized)</text>
 </g>
 </svg>
