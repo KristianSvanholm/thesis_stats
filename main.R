@@ -149,4 +149,13 @@ eng_on_lang <- ggplot(collector, aes(y=energy, x=group_ordered)) + geom_boxplot(
         scale_x_discrete(guide = guide_axis(angle = 45)) 
 ggsave(file="energy_on_language.svg", plot=eng_on_lang)
 
+# Print sorted median languages
+dta <- collector %>%
+        group_by(language) %>%
+        summarize(median=median(energy, na.rm = TRUE)) %>%
+        arrange(median) %>%
+        as.data.frame()
+
+print(dta)
+
 
