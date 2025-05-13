@@ -75,9 +75,9 @@ collector$type[collector$language %in% virt ] <- "Virtualized"
 collector$type[collector$language %in% interp ] <- "Interpreted"
 
 # Assign JIT groups
-collector$jit <- "JIT"
+collector$jit <- "No JIT"
 collector$jit[collector$language %in% comp] <- "Compiled"
-collector$jit[collector$language %in% jit] <- "No JIT"
+collector$jit[collector$language %in% jit] <- "JIT"
 
 
 # Boxplot energy on language type
