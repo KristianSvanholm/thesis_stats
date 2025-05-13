@@ -32,55 +32,13 @@ for (chip in chiplist) {
         slice_min(energy, n=3, with_ties=FALSE) %>%
         as.data.frame()
 
-    # Assign type groups   
-    min$type <- "not covered"
-    min$type[min$language %in% comp ] <- "Compiled"
-    min$type[min$language %in% virt ] <- "Virtualized"
-    min$type[min$language %in% interp ] <- "Interpreted"
-
-    # Assign JIT groups
-    min$jit <- "No"
-    min$jit[min$language %in% comp] <- "-"
-    min$jit[min$language %in% jit] <- "Yes"
-
-    # scatter points
-    #scatter <- ggplot(min, aes(y=energy, x=duration, color=type)) + geom_point()
-    #ggsave(file=concat(path, "scatter.svg"), plot=scatter)
-
-    #data <- min %>% select(-type, -language, -task) %>% scale()
-    #cls <- kmeans(data, centers = 10, iter.max = 100, nstart = 100)
-    #clust <- ggplot(data, aes(x=energy, y = duration, color= as.factor(cls$cluster), fill =as.factor(cls$cluster))) + geom_point() + stat_ellipse(type="t", geom = "polygon", alpha = 0.4)
-    #ggsave(file=concat(path, "cluster.svg"), plot=clust)
-
-    # Boxplot specific task
-    eng2 <- filter(min, min$task == "fannkuch-redux")
-    spec_task <- ggplot(eng2, aes(y=energy, x=language)) + geom_boxplot() +theme_bw()
-    #ggsave(file=concat(path, "task_avg.svg"), plot=spec_task)
-
-    # Boxplot specific language type
-    eng4 <- filter(min, min$type == "Virtualized")
-    ggplot(eng4, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
-
-    # Boxplot specific language
-    eng3 <- filter(min, min$language == "CSharp")
-    ggplot(eng3, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
-
-    # Boxplot energy on task
-    eng_on_task <- ggplot(min, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
-    #ggsave(file=concat(path, "energy_on_task.svg"), plot= eng_on_task)
-
     # Compute normalized data
     summary <- min %>%
-        group_by(language,jit, type) %>%
+        group_by(language) %>%
         summarise(across(where(is.numeric),mean), .groups="drop") %>%
         as.data.frame()
     m <- min(summary$energy)
     summary$energy <- summary$energy / m
-
-    # Boxplot energy on language type
-    eng_on_cat <- ggplot(summary, aes(y=energy, x=type, color=jit)) + geom_boxplot() +theme_bw()+ 
-        labs(x = "", y  ="Energy (normalized)") +ggtitle(chip);
-    ggsave(file=concat(path, "energy_on_language_category_",chip,".svg"), plot=eng_on_cat)
 
     # Collect into larger dataset
     norm_collect <- summary
@@ -109,6 +67,34 @@ for (chip in chiplist) {
 }
 
 collector <- collector %>% mutate(cpu = fct_inorder(cpu)) %>% as.data.frame()
+
+# Assign type groups   
+collector$type <- "not covered"
+collector$type[collector$language %in% comp ] <- "Compiled"
+collector$type[collector$language %in% virt ] <- "Virtualized"
+collector$type[collector$language %in% interp ] <- "Interpreted"
+
+# Assign JIT groups
+collector$jit <- "JIT"
+collector$jit[collector$language %in% comp] <- "Compiled"
+collector$jit[collector$language %in% jit] <- "No JIT"
+
+
+# Boxplot energy on language type
+eng_on_cat <- ggplot(collector, aes(y=energy, x=type, color=type)) + geom_boxplot() +theme_bw()+ 
+    labs(x = "", y  ="Energy (normalized)")
+ggsave(file="energy_category.svg", plot=eng_on_cat)
+
+# Boxplot energy on language type and JIT
+eng_on_cat_jit <- ggplot(collector, aes(y=energy, x=type, color=jit)) + geom_boxplot() +theme_bw()+ 
+    labs(x = "", y  ="Energy (normalized)")
+ggsave(file="energy_category_jit.svg", plot=eng_on_cat_jit)
+
+# Boxplot energy on JIT features
+eng_on_jit <- ggplot(collector, aes(y=energy, x=jit, color=jit)) + geom_boxplot() +theme_bw()+ 
+    labs(x = "", y  ="Energy (normalized)")
+ggsave(file="energy_jit.svg", plot=eng_on_jit)
+
 
 variance <- ggplot(collector, aes(y=energy, x=cpu, group=language, color=language)) +
     geom_line() + geom_point() + 
