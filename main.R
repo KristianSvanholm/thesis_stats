@@ -15,6 +15,9 @@ comp <- c("C", "Go", "Rust","Fortran", "Pascal", "Lisp")
 virt <- c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Racket") 
 interp <- c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
 
+# Jit languages
+jit <- c("Java", "CSharp", "FSharp", "JavaScript", "TypesScript", "Racket", "JRuby")
+
 collector <- frame()
 
 for (chip in chiplist) {
@@ -34,6 +37,11 @@ for (chip in chiplist) {
     min$type[min$language %in% comp ] <- "Compiled"
     min$type[min$language %in% virt ] <- "Virtualized"
     min$type[min$language %in% interp ] <- "Interpreted"
+
+    # Assign JIT groups
+    min$jit <- "No"
+    min$jit[min$language %in% comp] <- "-"
+    min$jit[min$language %in% jit] <- "Yes"
 
     # scatter points
     #scatter <- ggplot(min, aes(y=energy, x=duration, color=type)) + geom_point()
@@ -61,24 +69,25 @@ for (chip in chiplist) {
     eng_on_task <- ggplot(min, aes(y=energy, x=task)) + geom_boxplot() +theme_bw()
     #ggsave(file=concat(path, "energy_on_task.svg"), plot= eng_on_task)
 
+    # Compute normalized data
+    summary <- min %>%
+        group_by(language,jit, type) %>%
+        summarise(across(where(is.numeric),mean), .groups="drop") %>%
+        as.data.frame()
+    m <- min(summary$energy)
+    summary$energy <- summary$energy / m
+
     # Boxplot energy on language type
-    eng_on_cat <- ggplot(min, aes(y=energy, x=type)) + geom_boxplot() +theme_bw()
-    ggsave(file=concat(path, "energy_on_language_category.svg"), plot=eng_on_cat)
+    eng_on_cat <- ggplot(summary, aes(y=energy, x=type, color=jit)) + geom_boxplot() +theme_bw()+ 
+        labs(x = "", y  ="Energy (normalized)") +ggtitle(chip);
+    ggsave(file=concat(path, "energy_on_language_category_",chip,".svg"), plot=eng_on_cat)
 
-    # Normalized minimums AVG list by language
-    lang_min_avg <- aggregate(x=min$energy, by=list(min$language), mean)
-    names(lang_min_avg) = c("language", "energy")
-
-    m <- min(lang_min_avg$energy)
-    
-    norm <- lang_min_avg
-    norm$energy <- lang_min_avg$energy / m
-
-    norm_collect <- norm
+    # Collect into larger dataset
+    norm_collect <- summary
     norm_collect["cpu"] <- chip
     collector <- rbind(collector, norm_collect)
 
-    sorted_lang <- norm[order(norm$energy),]
+    sorted_lang <- summary[order(summary$energy),]
     rownames(sorted_lang) <- NULL
     write.csv(sorted_lang, file=concat(path, "ranks.csv"))
 
