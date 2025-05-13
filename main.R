@@ -82,7 +82,7 @@ collector$jit[collector$language %in% jit] <- "No JIT"
 
 # Boxplot energy on language type
 eng_on_cat <- ggplot(collector, aes(y=energy, x=type, color=type)) + geom_boxplot() +theme_bw()+ 
-    labs(x = "", y  ="Energy (normalized)")
+    labs(x = "", y  ="Energy (normalized)") + theme(legend.position= "none")
 ggsave(file="energy_category.svg", plot=eng_on_cat)
 
 # Boxplot energy on language type and JIT
@@ -92,7 +92,7 @@ ggsave(file="energy_category_jit.svg", plot=eng_on_cat_jit)
 
 # Boxplot energy on JIT features
 eng_on_jit <- ggplot(collector, aes(y=energy, x=jit, color=jit)) + geom_boxplot() +theme_bw()+ 
-    labs(x = "", y  ="Energy (normalized)")
+    labs(x = "", y  ="Energy (normalized)") + theme(legend.position= "none")
 ggsave(file="energy_jit.svg", plot=eng_on_jit)
 
 
