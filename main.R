@@ -1,6 +1,8 @@
 library(ggplot2)
 library(dplyr)
 library(forcats)
+library(tibble)
+library(tidyr)
 
 getwd()
 
@@ -51,7 +53,6 @@ for (chip in chiplist) {
 
     # Correlations between duration and energy
     cor(min$duration, min$energy, use = "everything", method ="spearman")
-    cor(min$duration, min$energy, use = "everything", method ="kendall")
     cor(min$duration, min$energy, use = "everything", method ="pearson")
 
     # P test
@@ -153,4 +154,36 @@ dta <- collector %>%
 
 print(dta)
 
+
+ranked <- collector %>%
+            group_by(cpu) %>%
+            mutate(rank=rank(energy)) %>%
+            ungroup()
+
+wide_ranks <- ranked %>%
+    select(cpu, language, rank) %>%
+    tidyr::pivot_wider(names_from = cpu, values_from = rank) %>%
+    column_to_rownames("language")
+
+print(cor(wide_ranks, method = "kendall"))
+
+# p test tau correlation
+
+print(cpu_names <- colnames(wide_ranks))
+
+results <- combn(cpu_names, 2, function(pair){
+    test <- cor.test(wide_ranks[[pair[1]]],
+                    wide_ranks[[pair[2]]],
+                    method = "kendall", exact=TRUE)
+
+    data.frame(
+        cpu1 = pair[1],
+        cpu2 = pair[2],
+        tau = test$estimate,
+        p_value= test$p.value
+    )
+}, simplify= FALSE)
+results_df <- do.call(rbind, results)
+
+print(results_df)
 
