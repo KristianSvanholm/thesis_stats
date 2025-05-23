@@ -21,6 +21,7 @@ interp <- c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
 jit <- c("Java", "CSharp", "FSharp", "JavaScript", "TypesScript", "Racket", "JRuby")
 
 collector <- frame()
+cor_collector <- frame()
 
 for (chip in chiplist) {
 
@@ -52,21 +53,47 @@ for (chip in chiplist) {
     write.csv(sorted_lang, file=concat(path, "ranks.csv"))
 
     # Correlations between duration and energy
-    cor(min$duration, min$energy, use = "everything", method ="spearman")
-    cor(min$duration, min$energy, use = "everything", method ="pearson")
 
-    # P test
-    cor.test(min$duration, min$energy)
+    time_cor_results <- energy %>%
+        group_by(language) %>%
+        summarise(
+            cor_result = list(cor.test(energy, duration, method = "pearson", exact=TRUE))
+        ) %>%
+        rowwise() %>%
+        mutate(
+            estimate = cor_result$estimate,
+            p_value = cor_result$p.value
+        ) %>%
+        ungroup() %>%
+        select(language, estimate, p_value)
+
+    time_cor_results["cpu"] <- chip
+    cor_collector <- rbind(cor_collector, time_cor_results)
 
     # Energy & Duration correlate to language ( Very different results with different methods )
-    correlation <- min %>%
-      group_by(language) %>%
-      summarise(correlation = cor(duration, energy, use = "everything", method ="kendall"))
-
-    write.csv(correlation, file=concat(path, "energy_time_cor.csv"))
-
 }
 
+## TIME / ENERGY CORRELATION
+cor_collector <- cor_collector %>% mutate(cpu = fct_inorder(cpu)) %>% as.data.frame()
+write.csv(cor_collector, file="energy_time_cor.csv")
+
+correlations <- ggplot(cor_collector, aes(y=estimate, x=cpu, group=language, color=language)) +
+    geom_line() + geom_point() + 
+    #geom_text(data=subset(collector, energy > 5 & cpu=="i78700" & language!="Python"),
+    #        aes(y=energy,x = cpu,label=language),
+    #           vjust=-0.5) +
+    #geom_text(data=subset(collector, cpu=="n150" & language=="Python"),
+    #        aes(y=energy,x = cpu,label=language),
+    #           vjust=+1.25) +
+    theme_bw() +
+    labs(
+        x = "",
+        y = "Correlation",
+    ) +
+    theme(legend.position = "none")
+ggsave(file="cross_correlations.svg", plot=correlations)
+
+## ENERGY RANKINGS
 collector <- collector %>% mutate(cpu = fct_inorder(cpu)) %>% as.data.frame()
 
 # Assign type groups   
@@ -184,6 +211,8 @@ results <- combn(cpu_names, 2, function(pair){
     )
 }, simplify= FALSE)
 results_df <- do.call(rbind, results)
+
+results_df %>% arrange(desc(tau)) %>% as.data.frame()
 
 print(results_df)
 
