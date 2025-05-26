@@ -123,6 +123,17 @@ eng_on_jit <- ggplot(collector, aes(y=energy, x=jit, color=jit)) + geom_boxplot(
     labs(x = "", y  ="Energy (normalized)") + theme(legend.position= "none")
 ggsave(file="energy_jit.svg", plot=eng_on_jit)
 
+median_jit <- collector %>%
+    group_by(jit) %>%
+    summarize(median=median(energy, na.rm = TRUE)) %>%
+    arrange(median) %>%
+    as.data.frame()
+
+median_baseline <- median_jit$median[1]
+median_jit$x <- median_jit$median / median_baseline
+
+print("median_jit")
+print(median_jit)
 
 variance <- ggplot(collector, aes(y=energy, x=cpu, group=language, color=language)) +
     geom_line() + geom_point() + 
