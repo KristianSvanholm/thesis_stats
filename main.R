@@ -18,7 +18,7 @@ virt <- c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Racket")
 interp <- c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
 
 # Jit languages
-jit <- c("Java", "CSharp", "FSharp", "JavaScript", "TypesScript", "Racket", "JRuby")
+jit <- c("Java", "CSharp", "FSharp", "JavaScript", "TypeScript", "Racket", "JRuby")
 
 collector <- frame()
 cor_collector <- frame()
