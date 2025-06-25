@@ -3,6 +3,7 @@ library(dplyr)
 library(forcats)
 library(tibble)
 library(tidyr)
+library(effsize)
 
 getwd()
 
@@ -13,7 +14,7 @@ concat <- function(...) {
 chiplist <- c("i78700", "n150", "epyc1", "epyc2", "m1max", "m2pro", "m3max")
 
 # Type group
-comp <- c("C", "Go", "Rust","Fortran", "Pascal", "Lisp")
+comp <- c("C", "Go", "Rust","Fortran", "Lisp")
 virt <- c("Java", "JRuby", "CSharp", "Erlang", "FSharp", "Racket") 
 interp <- c("Python", "Perl", "PHP", "Lua", "JavaScript", "TypeScript")
 
@@ -135,6 +136,10 @@ median_jit$x <- median_jit$median / median_baseline
 print("median_jit")
 print(median_jit)
 
+cohen.d(collector$energy[collector$jit=="Compiled"], collector$energy[collector$jit=="No JIT"])
+cohen.d(collector$energy[collector$jit=="Compiled"], collector$energy[collector$jit=="JIT"])
+cohen.d(collector$energy[collector$jit=="JIT"], collector$energy[collector$jit=="No JIT"])
+
 variance <- ggplot(collector, aes(y=energy, x=cpu, group=language, color=language)) +
     geom_line() + geom_point() + 
     geom_text(data=subset(collector, energy > 5 & cpu=="i78700" & language!="Python"),
@@ -203,7 +208,7 @@ wide_ranks <- ranked %>%
     tidyr::pivot_wider(names_from = cpu, values_from = rank) %>%
     column_to_rownames("language")
 
-print(cor(wide_ranks, method = "kendall"))
+#print(cor(wide_ranks, method = "kendall"))
 
 # p test tau correlation
 
@@ -225,5 +230,5 @@ results_df <- do.call(rbind, results)
 
 results_df %>% arrange(desc(tau)) %>% as.data.frame()
 
-print(results_df)
+#print(results_df)
 
